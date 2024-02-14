@@ -1,0 +1,203 @@
+STEP 1:
+"""
+URL configuration for GPVProject project.
+
+The `urlpatterns` list routes URLs to views. For more information please see:
+    https://docs.djangoproject.com/en/4.2/topics/http/urls/
+Examples:
+Function views
+    1. Add an import:  from my_app import views
+    2. Add a URL to urlpatterns:  path('', views. Home, name='home')
+Class-based views
+    1. Add an import:  from other_app.views import Home
+    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
+Including another URLconf
+    1. Import the include() function: from django.urls import include, path
+    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
+"""
+from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', include('gvpapp.urls'))
+]
+STEP:2
+from django.urls import path
+from gvpapp import views
+urlpatterns = [
+path('',views.home),
+path('marriagevalidate',views.marriage_fun),
+path('leapcheck',views.leap_check),
+]
+
+STEP:3
+from django.shortcuts import render
+# Create your views here.
+def home(request):
+     return render(request,'home.html')
+def marriage_fun(request):
+       age = int(request.POST["txtage"])
+       gender = request.POST["ddgen"]
+       return render(request,'marriage.html',{'age':age,'gender':gender})
+def leap_check(request):
+        year = int(request.POST["txtnum"])
+        return render(request,'leap.html',{'year':year})
+STEP:4
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        h1 {
+            color: #01F9C6;
+            font-family: Bright Teal;
+        }
+
+        .red-pink {
+            color: #FF007F;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to the Leap Year Portal</h1>
+    {% if year|divisibleby:4 %}
+        {% if year|divisibleby:100 %}
+            {% if year|divisibleby:400 %}
+                <h1 class="red-pink">{{ year }} is a leap year</h1>
+            {% else %}
+                <h1 class="red-pink">{{ year }} is not a leap year</h1>
+            {% endif %}
+        {% else %}
+            <h1 class="red-pink">{{ year }} is a leap year</h1>
+        {% endif %}
+    {% else %}
+        <h1 class="red-pink">{{ year }} is not a leap year</h1>
+    {% endif %}
+</body>
+</html>
+STEP 5:
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        h1 {
+            color: #ff6eff;
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+<h1>Welcome to the Marriage Portal</h1>
+{{ age }}
+{{ gender }}
+{% if gender == "Male" %}
+    {% if age > 21 %}
+        <h1>You are eligible for marriage</h1>
+    {% else %}
+        <h1>You are not eligible for marriage</h1>
+    {% endif %}
+{% elif gender == "Female" %}
+    {% if age > 18 %}
+        <h1>You are eligible for marriage</h1>
+    {% else %}
+        <h1>You are not eligible for marriage</h1>
+    {% endif %}
+{% endif %}
+</body>
+</html>
+STEP 6:
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,
+initial-scale=1.0">
+<style>
+body {
+font-family: Arial, sans-serif;
+display: flex;
+justify-content: center;
+align-items: center;
+height: 100vh;
+margin: 0;
+background-color: #f4f4f4;
+}
+#cont1 {
+display: flex;
+height: 250px;
+justify-content: space-between;
+width: 50%;
+background-color: #85b30eed;
+padding: 45px;
+border-radius: 8px;
+box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+#cont2 {
+display: flex;
+height: 250px;
+justify-content: space-between;
+width: 75%;
+background-color: #85b30eed;
+padding: 45px;
+border-radius: 8px;
+margin-left:35px;
+box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.validator {
+width: 80%;
+margin-right: 5px;
+}
+label {
+display: block;
+margin-bottom: 5px;
+}
+input, select {
+padding: 8px;
+margin-bottom: 10px;
+width: 100%;
+box-sizing: border-box;
+}
+button:hover {
+background-color: #45a049;
+}
+</style>
+<title>Validator</title>
+</head>
+<body>
+<form action="marriagevalidate" method="post">
+{% csrf_token %}
+<div class="container" id="cont1">
+<div class="validator" id="marriageValidator">
+<h2>Marriage Validator</h2>
+Age: <input type="number" name="txtage"
+placeholder="Enter age" required>
+Gender:<select name ="ddgen" required>
+<option >Male</option>
+<option >Female</option>
+<option >Others</option>
+</select>
+<input type="submit" name="btnsub"
+value="validate">
+</div>
+</div>
+</form>
+<form action="leapcheck" method="post">
+{% csrf_token %}
+<div class="container" id="cont2">
+<div class="validator" id="leapYearValidator">
+<h2>Leap Year Validator</h2>
+Year:<input type="number" name="txtnum"
+placeholder="Enter year" required>
+<input type="submit" name="btnsub"
+value="validate">
+</div>
+</div>
+</form>
+</body>
+</html>
+
+
